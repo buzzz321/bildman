@@ -9,7 +9,7 @@ const HEIGHT: usize = 480;
 fn plot_pixel(buffer: &mut [u8; WIDTH * HEIGHT], x: usize, y: usize, color: u8) {
     buffer[x + y * WIDTH] = color;
 }
-
+#[allow(dead_code)]
 fn ppm_to_string(buffer: &[u8; WIDTH * HEIGHT]) -> String {
     let mut out_data = String::from("P3\n");
     out_data += &format!("{} {}\n", WIDTH, HEIGHT).to_string();
@@ -55,14 +55,14 @@ fn main() -> std::io::Result<()> {
     let mut bitplane: [u8; WIDTH * HEIGHT] = [0; WIDTH * HEIGHT];
     //println!("{}", ppm_to_string(&bitplane));
     let delay_millis = time::Duration::from_millis(5);
-    let SIZE: f32 = 15.0;
-    let mut offx: f32 = SIZE; //WIDTH as f32 / 2.0;
+    let size: f32 = 15.0;
+    let mut offx: f32 = size; //WIDTH as f32 / 2.0;
     let mut offy: f32 = HEIGHT as f32 / 2.0;
     let mut xdir = 1.0;
     loop {
         bitplane.iter_mut().for_each(|x| *x = 0);
 
-        circle(&mut bitplane, SIZE, offx, offy);
+        circle(&mut bitplane, size, offx, offy);
         //plot_pixel(&mut bitplane, offx as usize, offy as usize, 255_u8);
         let start = Instant::now();
         send_to_pc(&socket, &bitplane);
@@ -74,8 +74,8 @@ fn main() -> std::io::Result<()> {
         offx += xdir;
         offy += 0.0;
 
-        if offx >= WIDTH as f32 - SIZE || offx <= SIZE {
-            //offx = SIZE + 2.0;
+        if offx >= WIDTH as f32 - size || offx <= size {
+            //offx = size + 2.0;
             xdir = -xdir;
         }
     }
